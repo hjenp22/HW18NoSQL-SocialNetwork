@@ -1,8 +1,9 @@
 const { Schema, model } = require('mongoose');
+const reactionSchema = require('./Reaction');
 
-const courseSchema = new Schema(
+const reactionSchema = new Schema(
   {
-    courseName: {
+    reactionId: {
       type: String,
       required: true,
     },
@@ -35,4 +36,4 @@ const courseSchema = new Schema(
 
 const Course = model('course', courseSchema);
 
-module.exports = Course;
+module.exports = reactionSchema;
