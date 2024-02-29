@@ -1,9 +1,11 @@
 const { Schema, model } = require('mongoose');
-const reactionSchema = require('./Reaction');
+const reactionSchema = require('./Reaction'); // Importing the reaction schema
 
+// Defining the thought schema
 const thoughtSchema = new Schema(
   {
     thoughtText: {
+      type: String,
       required: true,
       maxlength: 280,
       minlength: 1,
@@ -14,22 +16,24 @@ const thoughtSchema = new Schema(
     },
     username: {
       type: String,
-      default: defaultUsername,
+      required: true,
     },
-    reactions: [reactionSchema],
-    },
+    reactions: [reactionSchema], // Embedding the reaction schema
+  },
   {
     toJSON: {
-      virtuals: true,
-      getters: true,
+      virtuals: true, // Including virtual properties in JSON output
+      getters: true, // Applying getters (like virtuals) to JSON output
     },
   }
 );
 
+// Defining a virtual property for reaction count
 thoughtSchema.virtual('reactionCount').get(function () {
   return this.reactions.length;
 });
 
+// Defining a virtual property for formatted creation date
 thoughtSchema.virtual('formattedCreatedAt').get(function () {
   const options = {
     month: '2-digit',
@@ -42,6 +46,7 @@ thoughtSchema.virtual('formattedCreatedAt').get(function () {
   return this.createdAt.toLocaleString('en-US', options);
 });
 
+// Creating the Thought model based on the schema
 const Thought = model('Thought', thoughtSchema);
 
-module.exports = Thought;
+module.exports = Thought; // Exporting the Thought model
