@@ -1,39 +1,47 @@
 const { Schema, model } = require('mongoose');
 const reactionSchema = require('./Reaction');
 
-const reactionSchema = new Schema(
+const thoughtSchema = new Schema(
   {
-    reactionId: {
-      type: String,
+    thoughtText: {
       required: true,
+      maxlength: 280,
+      minlength: 1,
     },
-    inPerson: {
-      type: Boolean,
-      default: true,
-    },
-    startDate: {
+    createdAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
-    endDate: {
-      type: Date,
-      default: () => new Date(+new Date() + 84 * 24 * 60 * 60 * 1000),
+    username: {
+      type: String,
+      default: defaultUsername,
     },
-    students: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'student',
-      },
-    ],
-  },
+    reactions: [reactionSchema],
+    },
   {
     toJSON: {
       virtuals: true,
+      getters: true,
     },
-    id: false,
   }
 );
 
-const Course = model('course', courseSchema);
+thoughtSchema.virtual('reactionCount').get(function () {
+  return this.reactions.length;
+});
 
-module.exports = reactionSchema;
+thoughtSchema.virtual('formattedCreatedAt').get(function () {
+  const options = {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  };
+  return this.createdAt.toLocaleString('en-US', options);
+});
+
+const Thought = model('Thought', thoughtSchema);
+
+module.exports = Thought;
